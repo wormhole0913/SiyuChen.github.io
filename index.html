@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siyu Chen — 个人主页</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #0a0e17;
+    color: #c8d6e5;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  .bg-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+  /* ===== 导航 ===== */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    padding: 16px 0; backdrop-filter: blur(12px);
+    background: rgba(10, 14, 23, 0.75);
+    border-bottom: 1px solid rgba(0, 217, 255, 0.08);
+  }
+  nav .inner { max-width: 960px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: flex-end; gap: 32px; }
+  nav a { color: #8395a7; text-decoration: none; font-size: 14px; transition: color .25s; }
+  nav a:hover { color: #00d9ff; }
+
+  /* ===== 主容器 ===== */
+  .wrapper { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  /* ===== HERO ===== */
+  .hero { min-height: 100vh; display: flex; align-items: center; }
+  .hero-content { padding-top: 80px; }
+  .hero-greeting { font-size: 16px; color: #00d9ff; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-size: 56px; font-weight: 700; color: #ffffff; line-height: 1.2; margin-bottom: 12px; }
+  .hero h1 span { background: linear-gradient(135deg, #00d9ff, #6c5ce7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-role { font-size: 22px; color: #8395a7; margin-bottom: 28px; font-weight: 300; }
+  .hero-desc { font-size: 16px; color: #576574; max-width: 520px; margin-bottom: 40px; }
+  .hero-links { display: flex; gap: 20px; flex-wrap: wrap; }
+  .hero-links a {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 24px; border-radius: 6px; font-size: 14px; text-decoration: none;
+    transition: all .25s; font-weight: 500;
+  }
+  .btn-primary { background: linear-gradient(135deg, #00d9ff, #0088cc); color: #0a0e17; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 217, 255, 0.25); }
+  .btn-ghost { border: 1px solid rgba(0, 217, 255, 0.3); color: #00d9ff; }
+  .btn-ghost:hover { background: rgba(0, 217, 255, 0.08); transform: translateY(-2px); }
+
+  /* ===== 区块公用 ===== */
+  section { padding: 100px 0; }
+  .section-tag { font-size: 12px; color: #00d9ff; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; }
+  .section-title { font-size: 32px; font-weight: 700; color: #ffffff; margin-bottom: 48px; }
+  .section-title::after { content: ""; display: block; width: 48px; height: 3px; background: linear-gradient(90deg, #00d9ff, #6c5ce7); margin-top: 12px; border-radius: 2px; }
+
+  /* ===== 关于我 ===== */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+  .about-text p { color: #8395a7; margin-bottom: 20px; font-size: 15px; }
+  .about-highlights { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .highlight-card {
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 10px; padding: 24px; transition: border-color .3s;
+  }
+  .highlight-card:hover { border-color: rgba(0, 217, 255, 0.2); }
+  .highlight-card .num { font-size: 28px; font-weight: 700; color: #00d9ff; margin-bottom: 4px; }
+  .highlight-card .label { font-size: 13px; color: #576574; }
+
+  /* ===== 技能 ===== */
+  .skills-wrap { display: flex; flex-wrap: wrap; gap: 12px; }
+  .skill-tag {
+    padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 500;
+    background: rgba(0, 217, 255, 0.06); border: 1px solid rgba(0, 217, 255, 0.15);
+    color: #00d9ff; transition: all .25s;
+  }
+  .skill-tag:hover { background: rgba(0, 217, 255, 0.12); transform: translateY(-1px); }
+  .skill-tag.accent { background: rgba(108, 92, 231, 0.08); border-color: rgba(108, 92, 231, 0.2); color: #a29bfe; }
+
+  /* ===== 时间线 ===== */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before { content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 1px; background: rgba(255,255,255,0.06); }
+  .timeline-item { position: relative; margin-bottom: 40px; }
+  .timeline-item:last-child { margin-bottom: 0; }
+  .timeline-item::before {
+    content: ""; position: absolute; left: -36px; top: 8px;
+    width: 9px; height: 9px; border-radius: 50%; background: #00d9ff;
+    box-shadow: 0 0 12px rgba(0, 217, 255, 0.4);
+  }
+  .timeline-date { font-size: 12px; color: #576574; letter-spacing: 1px; margin-bottom: 4px; }
+  .timeline-title { font-size: 18px; font-weight: 600; color: #ffffff; margin-bottom: 4px; }
+  .timeline-sub { font-size: 13px; color: #00d9ff; margin-bottom: 6px; }
+  .timeline-desc { font-size: 14px; color: #8395a7; }
+
+  /* ===== 项目卡片 ===== */
+  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .project-card {
+    background: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 12px; padding: 28px; transition: all .3s;
+  }
+  .project-card:hover { border-color: rgba(0, 217, 255, 0.18); transform: translateY(-3px); }
+  .project-card .project-icon { font-size: 28px; margin-bottom: 16px; }
+  .project-card h4 { font-size: 18px; color: #ffffff; margin-bottom: 8px; }
+  .project-card p { font-size: 14px; color: #8395a7; margin-bottom: 16px; }
+  .project-card .project-tech { display: flex; flex-wrap: wrap; gap: 8px; }
+  .project-card .project-tech span { font-size: 11px; padding: 3px 10px; border-radius: 4px; color: #00d9ff; background: rgba(0, 217, 255, 0.08); }
+
+  /* ===== 联系 ===== */
+  .contact-list { display: flex; flex-direction: column; gap: 16px; max-width: 400px; }
+  .contact-item { display: flex; align-items: center; gap: 14px; color: #8395a7; font-size: 15px; }
+  .contact-item .icon { width: 40px; height: 40px; border-radius: 8px; background: rgba(0, 217, 255, 0.06); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+
+  /* ===== Footer ===== */
+  footer { text-align: center; padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.04); color: #576574; font-size: 13px; }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 36px; }
+    .about-grid, .projects-grid { grid-template-columns: 1fr; }
+    nav .inner { justify-content: center; gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 粒子画布 -->
+<canvas class="bg-layer" id="particles"></canvas>
+<!-- 网格画布 -->
+<canvas class="bg-layer" id="grid"></canvas>
+
+<!-- 导航 -->
+<nav>
+  <div class="inner">
+    <a href="#about">关于我</a>
+    <a href="#skills">技能</a>
+    <a href="#experience">经历</a>
+    <a href="#projects">项目</a>
+    <a href="#contact">联系</a>
+  </div>
+</nav>
+
+<main class="wrapper">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-greeting">Hello, 我是</p>
+      <h1>Siyu <span>Chen</span></h1>
+      <p class="hero-role">资深前端开发工程师</p>
+      <p class="hero-desc">
+        专注于构建高性能、优雅的 Web 应用。热爱技术探索，
+        追求代码质量与用户体验的完美平衡。
+      </p>
+      <div class="hero-links">
+        <a href="#contact" class="btn-primary">联系我</a>
+        <a href="#projects" class="btn-ghost">查看项目</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 关于我 -->
+  <section id="about">
+    <p class="section-tag">About</p>
+    <h2 class="section-title">关于我</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          我是一名拥有多年经验的前端开发工程师，目前专注于 React 生态与前端工程化。
+          擅长将复杂的产品需求转化为简洁、可维护的技术方案。
+        </p>
+        <p>
+          我相信好的代码本身就是最好的文档。在日常工作中，我推崇组件化开发和渐进式重构，
+          关注性能优化、可访问性和团队协作效率。
+        </p>
+        <p>
+          工作之余，我喜欢研究前沿技术、参与开源项目，并通过技术博客分享自己的思考和实践。
+        </p>
+      </div>
+      <div class="about-highlights">
+        <div class="highlight-card">
+          <div class="num">5+</div>
+          <div class="label">年前端开发经验</div>
+        </div>
+        <div class="highlight-card">
+          <div class="num">30+</div>
+          <div class="label">参与项目交付</div>
+        </div>
+        <div class="highlight-card">
+          <div class="num">10+</div>
+          <div class="label">开源项目贡献</div>
+        </div>
+        <div class="highlight-card">
+          <div class="num">50+</div>
+          <div class="label">技术文章输出</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 技能 -->
+  <section id="skills">
+    <p class="section-tag">Skills</p>
+    <h2 class="section-title">专业技能</h2>
+    <div class="skills-wrap">
+      <span class="skill-tag">React</span>
+      <span class="skill-tag">Vue.js</span>
+      <span class="skill-tag">TypeScript</span>
+      <span class="skill-tag">JavaScript (ES6+)</span>
+      <span class="skill-tag">Next.js</span>
+      <span class="skill-tag accent">Node.js</span>
+      <span class="skill-tag">HTML5 / CSS3</span>
+      <span class="skill-tag">Tailwind CSS</span>
+      <span class="skill-tag accent">Webpack / Vite</span>
+      <span class="skill-tag">前端性能优化</span>
+      <span class="skill-tag">CI / CD</span>
+      <span class="skill-tag accent">Docker</span>
+      <span class="skill-tag">Git 工作流</span>
+      <span class="skill-tag accent">GraphQL</span>
+    </div>
+  </section>
+
+  <!-- 经历 -->
+  <section id="experience">
+    <p class="section-tag">Experience</p>
+    <h2 class="section-title">工作经历</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">2022 — 至今</div>
+        <div class="timeline-title">高级前端工程师</div>
+        <div class="timeline-sub">某互联网科技公司</div>
+        <div class="timeline-desc">
+          主导前端架构设计与核心模块开发，推动组件库建设与前端工程化落地，
+          负责团队代码评审与技术分享。
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2019 — 2022</div>
+        <div class="timeline-title">前端开发工程师</div>
+        <div class="timeline-sub">某科技创业公司</div>
+        <div class="timeline-desc">
+          负责多条业务线的前端开发，参与从 0 到 1 搭建公司主站与后台管理系统，
+          推动 TypeScript 迁移与自动化测试体系建立。
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2017 — 2019</div>
+        <div class="timeline-title">初级前端开发</div>
+        <div class="timeline-sub">某信息技术公司</div>
+        <div class="timeline-desc">
+          参与企业级 Web 应用开发，负责页面还原、交互实现与接口联调，积累了大量实战经验。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 项目 -->
+  <section id="projects">
+    <p class="section-tag">Projects</p>
+    <h2 class="section-title">精选项目</h2>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-icon">&#9670;</div>
+        <h4>企业级组件库</h4>
+        <p>基于 React + TypeScript 的内部组件库，覆盖 40+ 业务组件，服务 10+ 产品线。</p>
+        <div class="project-tech">
+          <span>React</span><span>TypeScript</span><span>Storybook</span><span>Rollup</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-icon">&#9711;</div>
+        <h4>低代码搭建平台</h4>
+        <p>拖拽式页面搭建工具，支持组件联动与数据源配置，显著降低非技术人员上手门槛。</p>
+        <div class="project-tech">
+          <span>Vue.js</span><span>TypeScript</span><span>Monaco Editor</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-icon">&#9650;</div>
+        <h4>前端监控系统</h4>
+        <p>JS 错误、性能指标、接口异常一站式监控平台，日均处理亿级数据上报。</p>
+        <div class="project-tech">
+          <span>React</span><span>Node.js</span><span>ClickHouse</span><span>Grafana</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-icon">&#9632;</div>
+        <h4>微前端架构迁移</h4>
+        <p>主导巨石应用拆分为 6 个独立子应用，实现技术栈无关的渐进式迁移。</p>
+        <div class="project-tech">
+          <span>qiankun</span><span>React</span><span>Vue.js</span><span>Webpack</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 联系 -->
+  <section id="contact">
+    <p class="section-tag">Contact</p>
+    <h2 class="section-title">联系方式</h2>
+    <div class="contact-list">
+      <div class="contact-item">
+        <div class="icon">&#9993;</div>
+        <span>3370789865@qq.com</span>
+      </div>
+      <div class="contact-item">
+        <div class="icon">&#9742;</div>
+        <span>13996209067</span>
+      </div>
+      <div class="contact-item">
+        <div class="icon">&#9906;</div>
+        <span>杭州 · 浙江大学</span>
+      </div>
+      <div class="contact-item">
+        <div class="icon">&#9733;</div>
+        <span>github.com/yourname</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>2026 Siyu Chen — 保持热爱，奔赴山海</p>
+</footer>
+
+<script>
+// ==================== 网格背景 ====================
+const gridCanvas = document.getElementById('grid');
+const gridCtx = gridCanvas.getContext('2d');
+let gw, gh;
+
+function resizeGrid() {
+  gw = gridCanvas.width = window.innerWidth;
+  gh = gridCanvas.height = window.innerHeight;
+}
+resizeGrid();
+window.addEventListener('resize', resizeGrid);
+
+function drawGrid() {
+  gridCtx.clearRect(0, 0, gw, gh);
+  const step = 60;
+  gridCtx.strokeStyle = 'rgba(0, 217, 255, 0.03)';
+  gridCtx.lineWidth = 0.5;
+
+  for (let x = step; x < gw; x += step) {
+    gridCtx.beginPath();
+    gridCtx.moveTo(x, 0);
+    gridCtx.lineTo(x, gh);
+    gridCtx.stroke();
+  }
+  for (let y = step; y < gh; y += step) {
+    gridCtx.beginPath();
+    gridCtx.moveTo(0, y);
+    gridCtx.lineTo(gw, y);
+    gridCtx.stroke();
+  }
+  requestAnimationFrame(drawGrid);
+}
+drawGrid();
+
+// ==================== 粒子 + 数据流 + 扫描线 ====================
+const pCanvas = document.getElementById('particles');
+const pCtx = pCanvas.getContext('2d');
+let pw, ph, particles, streams;
+
+function resizeParticles() {
+  pw = pCanvas.width = window.innerWidth;
+  ph = pCanvas.height = window.innerHeight;
+}
+resizeParticles();
+window.addEventListener('resize', () => {
+  resizeParticles();
+  initParticles();
+  initStreams();
+});
+
+function initParticles() {
+  const count = Math.floor((pw * ph) / 10000);
+  particles = [];
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * pw,
+      y: Math.random() * ph,
+      r: Math.random() * 1.2 + 0.3,
+      vx: (Math.random() - .5) * .35,
+      vy: (Math.random() - .5) * .35,
+      o: Math.random() * .5 + .15,
+    });
+  }
+}
+
+// 竖状数据流
+function initStreams() {
+  const count = Math.floor(pw / 180);
+  streams = [];
+  for (let i = 0; i < count; i++) {
+    streams.push({
+      x: Math.random() * pw,
+      y: Math.random() * ph,
+      len: Math.random() * 80 + 40,
+      speed: Math.random() * 0.6 + 0.3,
+      o: Math.random() * 0.12 + 0.03,
+    });
+  }
+}
+
+initParticles();
+initStreams();
+
+let scanY = 0;
+let scanSpeed = 0.7;
+
+function drawParticles(ts) {
+  pCtx.clearRect(0, 0, pw, ph);
+
+  // 粒子
+  for (const p of particles) {
+    pCtx.beginPath();
+    pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    pCtx.fillStyle = `rgba(0, 217, 255, ${p.o})`;
+    pCtx.fill();
+
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.x < 0 || p.x > pw) p.vx *= -1;
+    if (p.y < 0 || p.y > ph) p.vy *= -1;
+  }
+
+  // 连线
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 130) {
+        pCtx.beginPath();
+        pCtx.moveTo(particles[i].x, particles[i].y);
+        pCtx.lineTo(particles[j].x, particles[j].y);
+        pCtx.strokeStyle = `rgba(0, 217, 255, ${0.05 * (1 - dist / 130)})`;
+        pCtx.lineWidth = 0.5;
+        pCtx.stroke();
+      }
+    }
+  }
+
+  // 竖状数据流
+  for (const s of streams) {
+    const grad = pCtx.createLinearGradient(s.x, s.y, s.x, s.y + s.len);
+    grad.addColorStop(0, 'rgba(0, 217, 255, 0)');
+    grad.addColorStop(0.5, `rgba(0, 217, 255, ${s.o})`);
+    grad.addColorStop(1, 'rgba(0, 217, 255, 0)');
+    pCtx.beginPath();
+    pCtx.moveTo(s.x, s.y);
+    pCtx.lineTo(s.x, s.y + s.len);
+    pCtx.strokeStyle = grad;
+    pCtx.lineWidth = 1;
+    pCtx.stroke();
+
+    s.y += s.speed;
+    if (s.y - s.len > ph) {
+      s.y = -s.len;
+      s.x = Math.random() * pw;
+    }
+  }
+
+  // 扫描线
+  scanY += scanSpeed;
+  if (scanY > ph) scanY = 0;
+  const scanGrad = pCtx.createLinearGradient(0, scanY - 30, 0, scanY + 30);
+  scanGrad.addColorStop(0, 'rgba(0, 217, 255, 0)');
+  scanGrad.addColorStop(0.5, 'rgba(0, 217, 255, 0.025)');
+  scanGrad.addColorStop(1, 'rgba(0, 217, 255, 0)');
+  pCtx.fillStyle = scanGrad;
+  pCtx.fillRect(0, scanY - 30, pw, 60);
+
+  requestAnimationFrame(drawParticles);
+}
+requestAnimationFrame(drawParticles);
+
+// 平滑滚动
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const el = document.querySelector(a.getAttribute('href'));
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+
+</body>
+</html>
